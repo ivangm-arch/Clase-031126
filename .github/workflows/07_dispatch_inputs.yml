@@ -1,0 +1,41 @@
+name: Workflow Manual Avanzado
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version a desplegar (ej. 1.0.0)'
+        required: true
+        type: string
+        default: '1.0.0'
+      navegador:
+        description: 'Selecciona el motor para los tests'
+        required: true
+        type: choice
+        options: ['chrome', 'firefox', 'safari']
+        default: 'chrome'
+      ejecutar_tests:
+        description: 'Ejecutar suite de pruebas antes de continuar'
+        required: false
+        type: boolean
+        default: true
+      entorno:
+        description: 'Entorno de destino'
+        required: true
+        type: choice
+        options: ['development', 'staging', 'production']
+        default: 'development'
+jobs:
+  despliegue-parametrizado:
+    runs-on: ubuntu-26.04
+    steps:
+      - name: Mostrar resumen de parametros
+        run: |
+          echo "Iniciando ejecucion manual..."
+          echo "Version: ${{ inputs.version }}"
+          echo "Navegador: ${{ inputs.navegador }}"
+          echo "Ejecutar tests: ${{ inputs.ejecutar_tests }}"
+          echo "Entorno: ${{ inputs.entorno }}"
+
+      - name: Ejecucion condicional de tests
+        if: ${{ inputs.ejecutar_tests == true }}
+        run: echo "Ejecutando tests E2E en ${{ inputs.navegador }}..."
